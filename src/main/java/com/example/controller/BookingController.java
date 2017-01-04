@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Roman Horilyi
@@ -31,6 +32,12 @@ public class BookingController {
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
+    }
+
+    @RequestMapping(value = "/{roomTitle}", method = RequestMethod.GET, produces = "application/json")
+    public List<Booking> getBookingsForRoom(@PathVariable String roomTitle) {
+        Room room = roomRepository.findByTitle(roomTitle);
+        return bookingRepository.findByRoom(room);
     }
 
     @RequestMapping(value = "/bookings/newBooking", method = RequestMethod.POST)
