@@ -5,10 +5,12 @@ import com.example.domain.Room;
 import com.example.domain.User;
 import com.example.dto.BookingDto;
 import com.example.exception.BookingException;
+import com.example.exception.RoomNotFoundException;
 import com.example.repository.BookingRepository;
 import com.example.repository.RoomRepository;
 import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Roman Horilyi
@@ -34,9 +37,13 @@ public class BookingController {
         this.bookingRepository = bookingRepository;
     }
 
-    @RequestMapping(value = "/{roomTitle}", method = RequestMethod.GET, produces = "application/json")
-    public List<Booking> getBookingsForRoom(@PathVariable String roomTitle) {
+    @RequestMapping(value = "/bookings/{roomTitle}", method = RequestMethod.GET, produces = "application/json")
+    @Cacheable(value = "bookingsForRoom", key = "#roomTitle")
+    public List<Booking> getBookingsForRoom(@PathVariable String roomTitle) throws RoomNotFoundException {
         Room room = roomRepository.findByTitle(roomTitle);
+        if (Objects.isNull(room)) {
+            throw new RoomNotFoundException(roomTitle);
+        }
         return bookingRepository.findByRoom(room);
     }
 
