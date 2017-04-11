@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.exception;
 
 import com.example.exception.BookingException;
 import com.example.exception.RoomNotFoundException;
@@ -21,18 +21,6 @@ import java.sql.SQLException;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(BookingException.class)
-    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
-    public void handleBookingException() {
-        log.info("BookingException occurred");
-    }
-
-    @ExceptionHandler(RoomNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public void handleRoomNotFoundException(RoomNotFoundException e) {
-        log.info("RoomNotFoundException occurred for Room=" + e.getRoomTitle());
-    }
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Object> handleSQLException(SQLException sqlEx, WebRequest webRequest) {
