@@ -15,6 +15,7 @@ import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -88,5 +89,11 @@ public class BookingController {
         booking.setDuration(duration);
 
         return booking;
+    }
+
+    @RequestMapping(value = "/session")
+    @ResponseStatus(HttpStatus.OK)
+    public void manageSessions(HttpSession session) {
+        System.out.println(session.getId());
     }
 }
